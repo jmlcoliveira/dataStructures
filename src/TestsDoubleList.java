@@ -2,14 +2,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import dataStructures.*;
 
-public class Tests {
+public class TestsDoubleList {
 
     List<Number> list;
     Number n0;
     Number n1;
     Number n2;
 
-    public Tests(){
+    public TestsDoubleList(){
         list = new DoubleList<>();
         n0 = new Number(0);
         n1 = new Number(1);

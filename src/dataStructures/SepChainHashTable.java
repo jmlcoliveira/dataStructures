@@ -91,10 +91,29 @@ public class SepChainHashTable<K extends Comparable<K>, V>
 
         static final long serialVersionUID = 0L;
 
+        /**
+         * Next element to be returned
+         */
         Entry<K, V> next;
+
+        /**
+         * Last returned element
+         */
         Entry<K, V> current;
+
+        /**
+         * Current index in the collision table
+         */
         int counter;
+
+        /**
+         * Iterator of collision table with elements
+         */
         Iterator<Entry<K, V>> it;
+
+        /**
+         * Position of the iterator in the collision table
+         */
         int posOfIterator;
 
         EntryIterator() {
@@ -123,14 +142,21 @@ public class SepChainHashTable<K extends Comparable<K>, V>
             current = null;
         }
 
+        /**
+         * Finds the next Entry to be returned
+         * @return an Entry if there is one or <code>null</code> if none was found
+         */
         protected Entry<K, V> findNext() {
             Entry<K, V> next = null;
             while (next == null || counter > table.length) {
                 if (it != null && it.hasNext())
-                    next = it.next();
+                    next = it.next(); //return next Entry off an iterator of collisions
                 else {
                     boolean foundNotEmpty = false;
+                    //Search entire table until a not empty position is found
                     while (!foundNotEmpty && counter < table.length) {
+                        //posOfIterator is needed to know which was last position of iterator
+                        //which has already been iterated but that position is collision table is not empty
                         if (table[counter].isEmpty() || posOfIterator == counter)
                             counter++;
                         else
@@ -155,6 +181,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
             newTable[i] = new OrderedDoubleList<>();
 
         Iterator<Entry<K, V>> it = iterator();
+        //iterate over all Entries and save them in the position of the new hash
         while (it.hasNext()) {
             Entry<K, V> e = it.next();
             int newHash = Math.abs(e.getKey().hashCode()) % newSize;

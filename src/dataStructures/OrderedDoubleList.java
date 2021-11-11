@@ -36,8 +36,8 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
      * @return node containing the key or <code>null</code> if key does not exist
      */
     protected SingleEntry<K, V> findNode(K key) {
-        for (SingleEntry<K, V> node = head; node != null && key.compareTo(node.getKey()) <= 0; node = node.next)
-            if (node.getKey().equals(key))
+        for (SingleEntry<K, V> node = head; node != null && node.getKey().compareTo(key) <= 0; node = node.next) //only search if the key of current node is <= than target key
+            if (node.getKey().equals(key))                                                                      // because list is ordered
                 return node;
         return null;
     }
@@ -45,7 +45,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
     @Override
     public V insert(K key, V value) {
         SingleEntry<K, V> node = findNode(key);
-        if (node != null) {
+        if (node != null) { //replace old value and return the old value
             V oldValue = node.getValue();
             node.setValue(value);
             return oldValue;
@@ -58,17 +58,23 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
             currentSize++;
             return null;
         }
+        // if key is lower than head, insert before head
         if (key.compareTo(head.getKey()) < 0) {
             insertFirst(node);
             return null;
         }
+        // if key is higher than tail, insert after tail
         if (key.compareTo(tail.getKey()) > 0) {
             insertLast(node);
             return null;
         }
 
+        //find pos to insert
+        //elements are ordered by ascending order
+        //Pre-Condition: element is not in the first position nor the last position
         for (SingleEntry<K, V> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
-            if (key.compareTo(currentNode.getKey()) < 0) {
+            //insert before the first element which is greater than key
+            if (currentNode.getKey().compareTo(key) > 0) {
                 SingleEntry<K, V> prevNode = currentNode.getPrevious();
                 prevNode.setNext(node);
                 node.setPrevious(prevNode);
@@ -79,6 +85,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
             }
         }
 
+        //will not be reached
         return null;
     }
 
@@ -163,7 +170,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
         return new EntryIterator();
     }
 
-    class EntryIterator implements Iterator<Entry<K, V>>, Serializable{
+    class EntryIterator implements Iterator<Entry<K, V>>, Serializable {
 
         static final long serialVersionUID = 0L;
 
@@ -216,10 +223,6 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
             this.key = key;
             previous = thePrevious;
             next = theNext;
-        }
-
-        protected SingleEntry(V value, K key) {
-            this(value, key, null, null);
         }
 
         public V getValue() {

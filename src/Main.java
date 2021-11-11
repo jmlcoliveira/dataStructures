@@ -5,28 +5,28 @@ import dataStructures.Iterator;
 public class Main {
 
     public static void main(String[] args) {
-        Dictionary<String, String> l = new SepChainHashTable<>(14);
+        Dictionary<Integer, String> l = new SepChainHashTable<>();
 
-        l.insert("6", "6");
-        l.insert("6", "5");
-        l.insert("6", "3");
-        l.insert("6", "2");
-        l.insert("6", "7");
-        l.insert("6", "1");
-        l.insert("6", "4");
-        l.insert("6", "6");
-        l.insert("6", "5");
-        l.insert("6", "3");
-        l.insert("6", "2");
-        l.insert("6", "7");
-        l.insert("6", "1");
-        l.insert("6", "4");
+        l.insert(8, "6");
+        l.insert(6, "5");
+        l.insert(4, "3");
+        l.insert(10, "2");
+        l.insert(5, "7");
+        l.insert(7, "1");
+        l.insert(9, "4");
+        l.insert(3, "6");
+        l.insert(6, "5");
+        l.insert(12, "3");
+        l.insert(1, "2");
+        l.insert(0, "7");
+        l.insert(2, "1");
+        l.insert(4, "4");
 
-        Iterator<Entry<String, String>> it = l.iterator();
+        Iterator<Entry<Integer, String>> it = l.iterator();
 
         while (it.hasNext()){
-            Entry<String, String> e = it.next();
-            System.out.printf("Key: %s; Value: %s\n",e.getKey(), e.getValue());
+            Entry<Integer, String> e = it.next();
+            System.out.printf("Key: %d; Value: %s\n",e.getKey(), e.getValue());
         }
     }
 }
