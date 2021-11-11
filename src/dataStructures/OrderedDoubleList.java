@@ -36,7 +36,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
      * @return node containing the key or <code>null</code> if key does not exist
      */
     protected SingleEntry<K, V> findNode(K key) {
-        for (SingleEntry<K, V> node = head; node != null && key.compareTo(node.getKey()) < 0; node = node.next)
+        for (SingleEntry<K, V> node = head; node != null && key.compareTo(node.getKey()) <= 0; node = node.next)
             if (node.getKey().equals(key))
                 return node;
         return null;

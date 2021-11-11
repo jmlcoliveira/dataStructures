@@ -264,8 +264,13 @@ public class DoubleList<E> implements List<E> {
     public void append(DoubleList<E> list) {
         DoubleListNode<E> first = list.head;
         DoubleListNode<E> last = list.tail;
-        first.setPrevious(tail);
-        tail.setNext(first);
+        if (isEmpty()) {
+            head = first;
+            tail = last;
+        } else {
+            first.setPrevious(tail);
+            tail.setNext(first);
+        }
         tail = last;
         currentSize += list.size();
         list.clear();
