@@ -23,6 +23,8 @@ public class SepChainHashTable<K extends Comparable<K>, V>
      */
     protected Dictionary<K, V>[] table;
 
+    private final double LOAD_FACTOR = 0.5;
+
 
     /**
      * Constructor of an empty separate chaining hash table,
@@ -187,7 +189,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
             int newHash = Math.abs(e.getKey().hashCode()) % newSize;
             newTable[newHash].insert(e.getKey(), e.getValue());
         }
-        maxSize = (int)(newSize * 0.9);
+        maxSize = (int)(newSize * LOAD_FACTOR);
         table = newTable;
     }
 }

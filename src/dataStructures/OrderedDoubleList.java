@@ -1,8 +1,10 @@
 package dataStructures;
 
+import dataStructures.exceptions.EmptyDictionaryException;
+
 import java.io.Serializable;
 
-public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary<K, V> {
+public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDictionary<K, V> {
 
     static final long serialVersionUID = 0L;
 
@@ -69,24 +71,25 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
             return null;
         }
 
+        insertMiddle(node);
+        return null;
+    }
+
+    protected void insertMiddle(SingleEntry<K, V> node){
         //find pos to insert
         //elements are ordered by ascending order
         //Pre-Condition: element is not in the first position nor the last position
         for (SingleEntry<K, V> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
             //insert before the first element which is greater than key
-            if (currentNode.getKey().compareTo(key) > 0) {
+            if (currentNode.getKey().compareTo(node.getKey()) > 0) {
                 SingleEntry<K, V> prevNode = currentNode.getPrevious();
                 prevNode.setNext(node);
                 node.setPrevious(prevNode);
                 node.setNext(currentNode);
                 currentNode.setPrevious(node);
                 currentSize++;
-                return null;
             }
         }
-
-        //will not be reached
-        return null;
     }
 
     protected void insertLast(SingleEntry<K, V> node) {
@@ -168,6 +171,18 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements Dictionary
     @Override
     public Iterator<Entry<K, V>> iterator() {
         return new EntryIterator();
+    }
+
+    @Override
+    public Entry<K, V> minEntry() throws EmptyDictionaryException {
+        if (isEmpty()) throw new EmptyDictionaryException();
+        return head;
+    }
+
+    @Override
+    public Entry<K, V> maxEntry() throws EmptyDictionaryException {
+        if (isEmpty()) throw new EmptyDictionaryException();
+        return tail;
     }
 
     class EntryIterator implements Iterator<Entry<K, V>>, Serializable {
