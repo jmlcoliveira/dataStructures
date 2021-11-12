@@ -108,7 +108,7 @@ public class TestsDoubleList {
         list2.addLast(n6);
         ((DoubleList<Number>) list).append(list2);
         assertEquals(list.size(), 6);
-        assert(list2.isEmpty());
+        assertTrue(list2.isEmpty());
         assertEquals(list.getFirst(), n0);
         assertEquals(list.get(3), n4);
         assertEquals(list.get(4), n5);
