@@ -46,7 +46,7 @@ public class CHTTest {
 
     @Test
     public void insertRandomTest() {
-        Dictionary<Integer, Integer> cht = new SepChainHashTable<Integer, Integer>(201);
+        Dictionary<Integer, Integer> cht = new SepChainHashTable<Integer, Integer>(10);
 
         //insertRandomElems(cht, 200);
         int arr[] = new int[200];
