@@ -16,16 +16,38 @@ public class DoubleList<E> implements List<E> {
     // Number of elements in the list.
     protected int currentSize;
 
+    /**
+     * Default constructor
+     */
     public DoubleList() {
         head = null;
         tail = null;
         currentSize = 0;
     }
 
+    /**
+     * Initialize with an already existing list
+     * @param list already existing list
+     */
     public DoubleList(DoubleList<E> list) {
         head = list.head;
         tail = list.tail;
         currentSize = list.currentSize;
+    }
+
+    /**
+     * Initialize by receiving a node - O(n) complexity
+     * @param node node
+     */
+    public DoubleList(DoubleListNode<E> node){
+        head = node;
+        tail = node;
+        currentSize = 0;
+
+        for(DoubleListNode<E> n = head; n != null; n=n.next){
+            tail = n;
+            currentSize++;
+        }
     }
 
     @Override

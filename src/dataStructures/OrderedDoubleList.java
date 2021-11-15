@@ -75,7 +75,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
         return null;
     }
 
-    protected void insertMiddle(SingleEntry<K, V> node){
+    protected void insertMiddle(SingleEntry<K, V> node) {
         //find pos to insert
         //elements are ordered by ascending order
         //Pre-Condition: element is not in the first position nor the last position
@@ -88,6 +88,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
                 node.setNext(currentNode);
                 currentNode.setPrevious(node);
                 currentSize++;
+                break;
             }
         }
     }
@@ -99,11 +100,9 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
         currentSize++;
     }
 
+    //head != null
     protected void insertFirst(SingleEntry<K, V> node) {
-        if (this.isEmpty())
-            tail = node;
-        else
-            head.setPrevious(node);
+        head.setPrevious(node);
         node.setNext(head);
         head = node;
         currentSize++;

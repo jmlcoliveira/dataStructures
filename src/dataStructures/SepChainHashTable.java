@@ -146,31 +146,31 @@ public class SepChainHashTable<K extends Comparable<K>, V>
 
         /**
          * Finds the next Entry to be returned
+         *
          * @return an Entry if there is one or <code>null</code> if none was found
          */
         protected Entry<K, V> findNext() {
             Entry<K, V> next = null;
-            while (next == null || counter > table.length) {
-                if (it != null && it.hasNext())
-                    next = it.next(); //return next Entry off an iterator of collisions
-                else {
-                    boolean foundNotEmpty = false;
-                    //Search entire table until a not empty position is found
-                    while (!foundNotEmpty && counter < table.length) {
-                        //posOfIterator is needed to know which was last position of iterator
-                        //which has already been iterated but that position is collision table is not empty
-                        if (table[counter].isEmpty() || posOfIterator == counter)
-                            counter++;
-                        else
-                            foundNotEmpty = true;
-                    }
-                    if (!foundNotEmpty)
-                        return null;
-                    it = table[counter].iterator();
-                    posOfIterator = counter;
-                    return it.next();
+            if (it != null && it.hasNext())
+                next = it.next(); //return next Entry of an iterator of collisions
+            else {
+                boolean foundNotEmpty = false;
+                //Search entire table until a not empty position is found
+                while (!foundNotEmpty && counter < table.length) {
+                    //posOfIterator is needed to know which was last position of iterator
+                    //which has already been iterated but that position is collision table is not empty
+                    if (table[counter].isEmpty() || posOfIterator == counter)
+                        counter++;
+                    else
+                        foundNotEmpty = true;
                 }
+                if (!foundNotEmpty)
+                    return null;
+                it = table[counter].iterator();
+                posOfIterator = counter;
+                return it.next();
             }
+
             return next;
         }
     }
@@ -189,7 +189,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
             int newHash = Math.abs(e.getKey().hashCode()) % newSize;
             newTable[newHash].insert(e.getKey(), e.getValue());
         }
-        maxSize = (int)(newSize * LOAD_FACTOR);
+        maxSize = (int) (newSize * LOAD_FACTOR);
         table = newTable;
     }
 }
