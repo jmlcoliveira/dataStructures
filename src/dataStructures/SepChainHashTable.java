@@ -170,7 +170,6 @@ public class SepChainHashTable<K extends Comparable<K>, V>
                 posOfIterator = counter;
                 return it.next();
             }
-
             return next;
         }
     }
@@ -193,35 +192,3 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         table = newTable;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
