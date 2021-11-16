@@ -38,7 +38,10 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
      * @return node containing the key or <code>null</code> if key does not exist
      */
     protected SingleEntry<K, V> findNode(K key) {
-        for (SingleEntry<K, V> node = head; node != null && node.getKey().compareTo(key) <= 0; node = node.next) //only search if the key of current node is <= than target key
+        if(isEmpty()) return null;
+        if(key.compareTo(head.getKey()) == 0) return head;
+        if(key.compareTo(tail.getKey()) == 0) return tail;
+        for (SingleEntry<K, V> node = head.getNext(); node != null && node.getKey().compareTo(key) <= 0; node = node.next) //only search if the key of current node is <= than target key
             if (node.getKey().equals(key))                                                                      // because list is ordered
                 return node;
         return null;
@@ -75,10 +78,10 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
         return null;
     }
 
+    //Pre-Condition:node is not in the first position nor the last position
     protected void insertMiddle(SingleEntry<K, V> node) {
         //find pos to insert
-        //elements are ordered by ascending order
-        //Pre-Condition: element is not in the first position nor the last position
+        //nodes are ordered by ascending order of keys
         for (SingleEntry<K, V> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
             //insert before the first element which is greater than key
             if (currentNode.getKey().compareTo(node.getKey()) > 0) {
@@ -93,6 +96,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
         }
     }
 
+    //Pre-condition: tail != null
     protected void insertLast(SingleEntry<K, V> node) {
         tail.setNext(node);
         node.setPrevious(tail);
@@ -100,7 +104,7 @@ public class OrderedDoubleList<K extends Comparable<K>, V> implements OrderedDic
         currentSize++;
     }
 
-    //head != null
+    //Pre-condition: head != null
     protected void insertFirst(SingleEntry<K, V> node) {
         head.setPrevious(node);
         node.setNext(head);
