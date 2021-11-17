@@ -24,7 +24,7 @@ public class CHTTest {
 
         Iterator<Entry<Integer, Integer>> it = cht.iterator();
 
-        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleList<Integer, Integer>();
+        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleDictionary<Integer, Integer>();
         while (it.hasNext()) {
             Entry<Integer, Integer> entry = it.next();
             entries.insert(entry.getKey(), entry.getValue());
@@ -109,7 +109,7 @@ public class CHTTest {
 
         Iterator<Entry<Integer, Integer>> it = cht.iterator();
 
-        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleList<Integer, Integer>();
+        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleDictionary<Integer, Integer>();
         while (it.hasNext()) {
             Entry<Integer, Integer> entry = it.next();
             entries.insert(entry.getKey(), entry.getValue());
@@ -167,7 +167,7 @@ public class CHTTest {
 
         it = cht.iterator();
 
-        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleList<Integer, Integer>();
+        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleDictionary<Integer, Integer>();
         while (it.hasNext()) {
             Entry<Integer, Integer> entry = it.next();
             entries.insert(entry.getKey(), entry.getValue());

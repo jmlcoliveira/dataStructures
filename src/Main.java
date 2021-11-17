@@ -28,5 +28,12 @@ public class Main {
             Entry<Integer, String> e = it.next();
             System.out.printf("Key: %d; Value: %s\n",e.getKey(), e.getValue());
         }
+
+        OrderedList<String> ol = new OrderedDoubleList<>();
+        ol.add("b");
+        ol.add("c");
+        ol.add("e");
+        ol.add("d");
+        ol.add("a");
     }
 }

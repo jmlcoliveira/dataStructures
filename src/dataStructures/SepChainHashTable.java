@@ -40,7 +40,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         // Compiler gives a warning.
         table = (Dictionary<K, V>[]) new Dictionary[arraySize];
         for (int i = 0; i < arraySize; i++)
-            table[i] = new OrderedDoubleList<>();
+            table[i] = new OrderedDoubleDictionary<>();
         maxSize = capacity;
         currentSize = 0;
     }
@@ -179,7 +179,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         int newSize = nextPrime((int) (table.length * 1.1));
         Dictionary<K, V>[] newTable = (Dictionary<K, V>[]) new Dictionary[newSize];
         for (int i = 0; i < newSize; i++)
-            newTable[i] = new OrderedDoubleList<>();
+            newTable[i] = new OrderedDoubleDictionary<>();
 
         Iterator<Entry<K, V>> it = iterator();
         //iterate over all Entries and save them in the position of the new hash
