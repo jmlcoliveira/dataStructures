@@ -9,9 +9,9 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     static final long serialVersionUID = 0L;
 
     // Node at the head of the list.
-    protected SingleEntry<K, V> head;
+    protected EntryClass<K, V> head;
     // Node at the tail of the list.
-    protected SingleEntry<K, V> tail;
+    protected EntryClass<K, V> tail;
     // Number of elements in the list.
     protected int currentSize;
 
@@ -33,7 +33,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     @Override
     public V find(K key) {
-        SingleEntry<K, V> nodeWithKey = findNode(key);
+        EntryClass<K, V> nodeWithKey = findNode(key);
         return nodeWithKey == null ? null : nodeWithKey.getValue();
     }
 
@@ -43,11 +43,11 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
      * @param key key
      * @return node containing the key or <code>null</code> if key does not exist
      */
-    protected SingleEntry<K, V> findNode(K key) {
+    protected EntryClass<K, V> findNode(K key) {
         if(isEmpty()) return null;
         if(key.compareTo(head.getKey()) == 0) return head;
         if(key.compareTo(tail.getKey()) == 0) return tail;
-        for (SingleEntry<K, V> node = head.getNext(); node != null && node.getKey().compareTo(key) <= 0; node = node.next) //only search if the key of current node is <= than target key
+        for (EntryClass<K, V> node = head.getNext(); node != null && node.getKey().compareTo(key) <= 0; node = node.getNext()) //only search if the key of current node is <= than target key
             if (node.getKey().equals(key))                                                                      // because list is ordered
                 return node;
         return null;
@@ -55,14 +55,14 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     @Override
     public V insert(K key, V value) {
-        SingleEntry<K, V> node = findNode(key);
+        EntryClass<K, V> node = findNode(key);
         if (node != null) { //replace old value and return the old value
             V oldValue = node.getValue();
             node.setValue(value);
             return oldValue;
         }
 
-        node = new SingleEntry<>(value, key, null, null);
+        node = new EntryClass<>(key, value, null, null);
         if (isEmpty()) {
             head = node;
             tail = node;
@@ -85,13 +85,13 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     }
 
     //Pre-Condition:node is not in the first position nor the last position
-    protected void insertMiddle(SingleEntry<K, V> node) {
+    protected void insertMiddle(EntryClass<K, V> node) {
         //find pos to insert
         //nodes are ordered by ascending order of keys
-        for (SingleEntry<K, V> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
+        for (EntryClass<K, V> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
             //insert before the first element which is greater than key
             if (currentNode.getKey().compareTo(node.getKey()) > 0) {
-                SingleEntry<K, V> prevNode = currentNode.getPrevious();
+                EntryClass<K, V> prevNode = currentNode.getPrevious();
                 prevNode.setNext(node);
                 node.setPrevious(prevNode);
                 node.setNext(currentNode);
@@ -103,7 +103,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     }
 
     //Pre-condition: tail != null
-    protected void insertLast(SingleEntry<K, V> node) {
+    protected void insertLast(EntryClass<K, V> node) {
         tail.setNext(node);
         node.setPrevious(tail);
         tail = node;
@@ -111,7 +111,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     }
 
     //Pre-condition: head != null
-    protected void insertFirst(SingleEntry<K, V> node) {
+    protected void insertFirst(EntryClass<K, V> node) {
         head.setPrevious(node);
         node.setNext(head);
         head = node;
@@ -120,7 +120,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     @Override
     public V remove(K key) {
-        SingleEntry<K, V> node = findNode(key);
+        EntryClass<K, V> node = findNode(key);
         if (node == null) return null;
 
         if (node == head) {
@@ -169,9 +169,9 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
      *
      * @param node - middle node to be removed
      */
-    protected void removeMiddleNode(SingleEntry<K, V> node) {
-        SingleEntry<K, V> prevNode = node.getPrevious();
-        SingleEntry<K, V> nextNode = node.getNext();
+    protected void removeMiddleNode(EntryClass<K, V> node) {
+        EntryClass<K, V> prevNode = node.getPrevious();
+        EntryClass<K, V> nextNode = node.getNext();
         prevNode.setNext(nextNode);
         nextNode.setPrevious(prevNode);
         currentSize--;
@@ -198,8 +198,8 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
         static final long serialVersionUID = 0L;
 
-        SingleEntry<K, V> next;
-        SingleEntry<K, V> current;
+        EntryClass<K, V> next;
+        EntryClass<K, V> current;
 
         EntryIterator() {
             rewind();
@@ -222,59 +222,6 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         public void rewind() {
             next = head;
             current = null;
-        }
-    }
-
-    static class SingleEntry<K, V> implements Entry<K, V>, Serializable {
-
-        static final long serialVersionUID = 0L;
-
-        // Value stored in the node.
-        private V value;
-
-        //Key stored in the node
-        private final K key;
-
-        // (Pointer to) the previous node.
-        private SingleEntry<K, V> previous;
-
-        // (Pointer to) the next node.
-        private SingleEntry<K, V> next;
-
-        protected SingleEntry(V value, K key, SingleEntry<K, V> thePrevious,
-                              SingleEntry<K, V> theNext) {
-            this.value = value;
-            this.key = key;
-            previous = thePrevious;
-            next = theNext;
-        }
-
-        public V getValue() {
-            return value;
-        }
-
-        public K getKey() {
-            return key;
-        }
-
-        protected void setValue(V newValue) {
-            value = newValue;
-        }
-
-        protected SingleEntry<K, V> getPrevious() {
-            return previous;
-        }
-
-        protected void setPrevious(SingleEntry<K, V> newPrevious) {
-            previous = newPrevious;
-        }
-
-        protected SingleEntry<K, V> getNext() {
-            return next;
-        }
-
-        protected void setNext(SingleEntry<K, V> newNext) {
-            next = newNext;
         }
     }
 }
