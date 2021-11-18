@@ -1,10 +1,9 @@
-import static org.junit.Assert.*;
-
+import dataStructures.*;
 import org.junit.Test;
 
 import java.util.Random;
 
-import dataStructures.*;
+import static org.junit.Assert.*;
 
 public class CHTTest {
 
@@ -24,7 +23,7 @@ public class CHTTest {
 
         Iterator<Entry<Integer, Integer>> it = cht.iterator();
 
-        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleDictionary<Integer, Integer>();
+        OrderedDictionary<Integer, Integer> entries = new BinarySearchTree<>();
         while (it.hasNext()) {
             Entry<Integer, Integer> entry = it.next();
             entries.insert(entry.getKey(), entry.getValue());
@@ -46,36 +45,38 @@ public class CHTTest {
 
     @Test
     public void insertRandomTest() {
-        Dictionary<Integer, Integer> cht = new SepChainHashTable<Integer, Integer>(10);
 
         //insertRandomElems(cht, 200);
-        int arr[] = new int[200];
-        Random rand = new Random();
-        int i = 0;
-        while (i < 200) {
-            int e = rand.nextInt();
-            cht.insert(e, e);
-            arr[i] = e;
-            i = cht.size();
-        }
-
-        for (i = 0; i < 200; i++) {
-            if (cht.find(arr[i]) == null) {
-                System.out.println(i);
-                System.out.println(arr[i]);
+        for (int k = 0; k < 10000; k++) {
+            Dictionary<Integer, Integer> cht = new SepChainHashTable<Integer, Integer>(10000);
+            int arr[] = new int[10000];
+            Random rand = new Random();
+            int i = 0;
+            while (i < 10000) {
+                int e = rand.nextInt();
+                cht.insert(e, e);
+                arr[i] = e;
+                i = cht.size();
             }
-            assert (arr[i] == cht.find(arr[i]));
-        }
 
-        Iterator<Entry<Integer, Integer>> it = cht.iterator();
+            for (i = 0; i < 10000; i++) {
+                if (cht.find(arr[i]) == null) {
+                    System.out.println(i);
+                    System.out.println(arr[i]);
+                }
+                assert (arr[i] == cht.find(arr[i]));
+            }
 
-        int counter = 0;
-        while (it.hasNext()) {
-            it.next().getKey();
-            counter++;
+            Iterator<Entry<Integer, Integer>> it = cht.iterator();
+
+            int counter = 0;
+            while (it.hasNext()) {
+                it.next().getKey();
+                counter++;
+            }
+            int size = cht.size();
+            assertEquals(cht.size(), counter);
         }
-        int size = cht.size();
-        assertEquals(cht.size(), counter);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class CHTTest {
 
         Iterator<Entry<Integer, Integer>> it = cht.iterator();
 
-        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleDictionary<Integer, Integer>();
+        OrderedDictionary<Integer, Integer> entries = new BinarySearchTree<Integer, Integer>();
         while (it.hasNext()) {
             Entry<Integer, Integer> entry = it.next();
             entries.insert(entry.getKey(), entry.getValue());
@@ -167,7 +168,7 @@ public class CHTTest {
 
         it = cht.iterator();
 
-        OrderedDictionary<Integer, Integer> entries = new OrderedDoubleDictionary<Integer, Integer>();
+        OrderedDictionary<Integer, Integer> entries = new BinarySearchTree<Integer, Integer>();
         while (it.hasNext()) {
             Entry<Integer, Integer> entry = it.next();
             entries.insert(entry.getKey(), entry.getValue());

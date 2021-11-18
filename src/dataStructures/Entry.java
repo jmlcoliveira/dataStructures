@@ -11,8 +11,7 @@ import java.io.Serializable;
  * @param <V> Generic Value  
  */
 
-public interface Entry<K,V> extends Serializable
-{
+public interface Entry<K,V> extends Serializable {
 	/**
 	 * Returns the key in the entry.
 	 * @return key in the entry

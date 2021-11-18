@@ -143,7 +143,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements OrderedDict
     // specified key, removes it from the dictionary and returns
     // its value; otherwise, returns null.
     public V remove(K key) {
-        PathStep<K, V> lastStep = new PathStep<K, V>(null, false);
+        PathStep<K, V> lastStep = new PathStep<>(null, false);
         BSTNode<K, V> node = this.findNode(key, lastStep);
         if (node == null)
             return null;
@@ -173,40 +173,48 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements OrderedDict
     // Returns an iterator of the entries in the dictionary
     // which preserves the key order relation.
     public Iterator<Entry<K, V>> iterator() {
-        return new BSTKeyOrderIterator<>(root);
+        return new BSTKeyOrderIterator(root);
     }
 
-    static class BSTKeyOrderIterator<K extends Comparable<K>, V> implements Iterator<Entry<K, V>> {
+    class BSTKeyOrderIterator implements Iterator<Entry<K, V>> {
 
-        BSTNode<K, V> root;
-        BSTNode<K, V> current;
-        BSTNode<K, V> next;
-        PathStep<K, V> lastStep;
+        DoubleList<BSTNode<K, V>> list;
 
         BSTKeyOrderIterator(BSTNode<K, V> root) {
-            this.root = root;
+            rewind();
         }
 
         @Override
         public boolean hasNext() {
-            return next != null;
+            return list.size() != 0;
         }
 
         @Override
         public Entry<K, V> next() throws NoSuchElementException {
-            if (next == null) throw new NoSuchElementException();
-            current = next;
-            next = findNext();
-            return current.getEntry();
+            if (list.isEmpty()) throw new NoSuchElementException();
+            BSTNode<K, V> toReturn = findNext();
+            return toReturn.getEntry();
+        }
+
+        protected void findLowest(BSTNode<K, V> node) {
+            while (node != null) {
+                list.addFirst(node);
+                node = node.getLeft();
+            }
         }
 
         protected BSTNode<K, V> findNext() {
-            //TODO
+            BSTNode<K, V> toReturn = list.removeFirst();
+            if (toReturn.getRight() != null) {
+                findLowest(toReturn.getRight());
+            }
+            return toReturn;
         }
 
         @Override
         public void rewind() {
-            //TODO
+            list = new DoubleList<>();
+            findLowest(root);
         }
     }
 

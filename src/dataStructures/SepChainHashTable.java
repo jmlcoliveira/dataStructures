@@ -40,7 +40,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         // Compiler gives a warning.
         table = (Dictionary<K, V>[]) new Dictionary[arraySize];
         for (int i = 0; i < arraySize; i++)
-            table[i] = new OrderedDoubleDictionary<>();
+            table[i] = new BinarySearchTree<>();
         maxSize = capacity;
         currentSize = 0;
     }
