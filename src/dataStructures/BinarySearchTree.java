@@ -178,7 +178,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements OrderedDict
 
     class BSTKeyOrderIterator implements Iterator<Entry<K, V>> {
 
-        DoubleList<BSTNode<K, V>> list;
+        private DoubleList<BSTNode<K, V>> list;
+        final boolean lowToHigh = true;
 
         BSTKeyOrderIterator(BSTNode<K, V> root) {
             rewind();
@@ -203,18 +204,30 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements OrderedDict
             }
         }
 
+        protected void findHighest(BSTNode<K, V> node) {
+            while (node != null) {
+                list.addFirst(node);
+                node = node.getRight();
+            }
+        }
+
         protected BSTNode<K, V> findNext() {
             BSTNode<K, V> toReturn = list.removeFirst();
-            if (toReturn.getRight() != null) {
-                findLowest(toReturn.getRight());
-            }
+            if (lowToHigh) {
+                if (toReturn.getRight() != null)
+                    findLowest(toReturn.getRight());
+            } else if (toReturn.getLeft() != null)
+                findHighest(toReturn.getLeft());
             return toReturn;
         }
 
         @Override
         public void rewind() {
             list = new DoubleList<>();
-            findLowest(root);
+            if (lowToHigh)
+                findLowest(root);
+            else
+                findHighest(root);
         }
     }
 
