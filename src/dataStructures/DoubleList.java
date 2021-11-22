@@ -44,7 +44,7 @@ public class DoubleList<E> implements List<E> {
         tail = node;
         currentSize = 0;
 
-        for(DoubleListNode<E> n = head; n != null; n=n.next){
+        for(DoubleListNode<E> n = head; n != null; n=n.getNext()){
             tail = n;
             currentSize++;
         }
@@ -228,7 +228,7 @@ public class DoubleList<E> implements List<E> {
     @Override
     public int indexOf(E element) {
         int i = 0;
-        for (DoubleListNode<E> node = head; node != null; node = node.next) {
+        for (DoubleListNode<E> node = head; node != null; node = node.getNext()) {
             if (node.getElement().equals(element))
                 return i;
             i++;
@@ -295,54 +295,5 @@ public class DoubleList<E> implements List<E> {
         tail = last;
         currentSize += list.size();
         list.clear();
-    }
-
-    static class DoubleListNode<E> implements Serializable {
-
-        static final long serialVersionUID = 0L;
-
-        // Element stored in the node.
-        private E element;
-
-        // (Pointer to) the previous node.
-        private DoubleListNode<E> previous;
-
-        // (Pointer to) the next node.
-        private DoubleListNode<E> next;
-
-        public DoubleListNode(E theElement, DoubleListNode<E> thePrevious,
-                              DoubleListNode<E> theNext) {
-            element = theElement;
-            previous = thePrevious;
-            next = theNext;
-        }
-
-        public DoubleListNode(E theElement) {
-            this(theElement, null, null);
-        }
-
-        public E getElement() {
-            return element;
-        }
-
-        public void setElement(E newElement) {
-            element = newElement;
-        }
-
-        public DoubleListNode<E> getPrevious() {
-            return previous;
-        }
-
-        public void setPrevious(DoubleListNode<E> newPrevious) {
-            previous = newPrevious;
-        }
-
-        public DoubleListNode<E> getNext() {
-            return next;
-        }
-
-        public void setNext(DoubleListNode<E> newNext) {
-            next = newNext;
-        }
     }
 }

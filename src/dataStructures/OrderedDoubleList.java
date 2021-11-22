@@ -1,7 +1,5 @@
 package dataStructures;
 
-import dataStructures.exceptions.EmptyListException;
-
 public class OrderedDoubleList<E extends Comparable<E>> extends DoubleList<E> implements OrderedList<E> {
 
     static final long serialVersionUID = 0L;
@@ -23,7 +21,8 @@ public class OrderedDoubleList<E extends Comparable<E>> extends DoubleList<E> im
         if (isEmpty()) return null;
         if (e.compareTo(head.getElement()) == 0) return head;
         if (e.compareTo(tail.getElement()) == 0) return tail;
-        for (DoubleListNode<E> node = head.getNext(); node != null && node.getElement().compareTo(e) <= 0; node = node.getNext()) //only search if the key of current node is <= than target key
+        DoubleListNode<E> node;
+        for (node = head.getNext(); node != null && node.getElement().compareTo(e) <= 0; node = node.getNext()) //only search if the key of current node is <= than target key
             if (node.getElement().equals(e))                                                                                      // because list is ordered
                 return node;
         return null;

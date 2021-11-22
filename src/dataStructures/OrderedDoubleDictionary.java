@@ -9,13 +9,13 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     static final long serialVersionUID = 0L;
 
     // Node at the head of the list.
-    protected EntryClass<K, V> head;
+    protected DoubleListNode<EntryClass<K, V>> head;
     // Node at the tail of the list.
-    protected EntryClass<K, V> tail;
+    protected DoubleListNode<EntryClass<K, V>> tail;
     // Number of elements in the list.
     protected int currentSize;
 
-    public OrderedDoubleDictionary(){
+    public OrderedDoubleDictionary() {
         head = null;
         tail = null;
         currentSize = 0;
@@ -33,8 +33,10 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     @Override
     public V find(K key) {
-        EntryClass<K, V> nodeWithKey = findNode(key);
-        return nodeWithKey == null ? null : nodeWithKey.getValue();
+        DoubleListNode<EntryClass<K, V>> nodeWithKey = findNode(key);
+        if (nodeWithKey == null)
+            return null;
+        return nodeWithKey.getElement().getValue();
     }
 
     /**
@@ -43,26 +45,38 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
      * @param key key
      * @return node containing the key or <code>null</code> if key does not exist
      */
-    protected EntryClass<K, V> findNode(K key) {
-        if(isEmpty()) return null;
-        if(key.compareTo(head.getKey()) == 0) return head;
-        if(key.compareTo(tail.getKey()) == 0) return tail;
-        for (EntryClass<K, V> node = head.getNext(); node != null && node.getKey().compareTo(key) <= 0; node = node.getNext()) //only search if the key of current node is <= than target key
-            if (node.getKey().equals(key))                                                                      // because list is ordered
+    protected DoubleListNode<EntryClass<K, V>> findNode(K key) {
+        if (isEmpty()) return null;
+        DoubleListNode<EntryClass<K, V>> node;
+        for (node = head; node != null && node.getElement().getKey().compareTo(key) <= 0; node = node.getNext()) //only search if the key of current node is <= than target key
+            if (node.getElement().getKey().equals(key))                                                                      // because list is ordered
                 return node;
         return null;
     }
 
     @Override
     public V insert(K key, V value) {
-        EntryClass<K, V> node = findNode(key);
-        if (node != null) { //replace old value and return the old value
-            V oldValue = node.getValue();
-            node.setValue(value);
+        DoubleListNode<EntryClass<K, V>> node = null;
+        DoubleListNode<EntryClass<K, V>> nodeAfter;
+        for (nodeAfter = head; nodeAfter != null && nodeAfter.getElement().getKey().compareTo(key) <= 0; nodeAfter = nodeAfter.getNext()) {
+            if (nodeAfter.getElement().getKey().equals(key)) {
+                node = nodeAfter;
+                break;
+            }
+        }
+        EntryClass<K, V> entry;
+        if (node == null)
+            entry = null;
+        else
+            entry = node.getElement();
+        if (entry != null) { //replace old value and return the old value
+            V oldValue = entry.getValue();
+            entry.setValue(value);
             return oldValue;
         }
 
-        node = new EntryClass<>(key, value, null, null);
+        entry = new EntryClass<>(key, value);
+        node = new DoubleListNode<>(entry);
         if (isEmpty()) {
             head = node;
             tail = node;
@@ -70,40 +84,33 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
             return null;
         }
         // if key is lower than head, insert before head
-        if (key.compareTo(head.getKey()) < 0) {
+        if (key.compareTo(head.getElement().getKey()) < 0) {
             insertFirst(node);
             return null;
         }
         // if key is higher than tail, insert after tail
-        if (key.compareTo(tail.getKey()) > 0) {
+        if (key.compareTo(tail.getElement().getKey()) > 0) {
             insertLast(node);
             return null;
         }
 
-        insertMiddle(node);
+        assert nodeAfter != null;
+        insertMiddle(node, nodeAfter);
         return null;
     }
 
     //Pre-Condition:node is not in the first position nor the last position
-    protected void insertMiddle(EntryClass<K, V> node) {
-        //find pos to insert
-        //nodes are ordered by ascending order of keys
-        for (EntryClass<K, V> currentNode = head; currentNode != null; currentNode = currentNode.getNext()) {
-            //insert before the first element which is greater than key
-            if (currentNode.getKey().compareTo(node.getKey()) > 0) {
-                EntryClass<K, V> prevNode = currentNode.getPrevious();
-                prevNode.setNext(node);
-                node.setPrevious(prevNode);
-                node.setNext(currentNode);
-                currentNode.setPrevious(node);
-                currentSize++;
-                break;
-            }
-        }
+    protected void insertMiddle(DoubleListNode<EntryClass<K, V>> node, DoubleListNode<EntryClass<K, V>> nodeAfter) {
+        DoubleListNode<EntryClass<K, V>> prevNode = nodeAfter.getPrevious();
+        prevNode.setNext(node);
+        node.setPrevious(prevNode);
+        node.setNext(nodeAfter);
+        nodeAfter.setPrevious(node);
+        currentSize++;
     }
 
     //Pre-condition: tail != null
-    protected void insertLast(EntryClass<K, V> node) {
+    protected void insertLast(DoubleListNode<EntryClass<K, V>> node) {
         tail.setNext(node);
         node.setPrevious(tail);
         tail = node;
@@ -111,7 +118,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     }
 
     //Pre-condition: head != null
-    protected void insertFirst(EntryClass<K, V> node) {
+    protected void insertFirst(DoubleListNode<EntryClass<K, V>> node) {
         head.setPrevious(node);
         node.setNext(head);
         head = node;
@@ -120,7 +127,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     @Override
     public V remove(K key) {
-        EntryClass<K, V> node = findNode(key);
+        DoubleListNode<EntryClass<K, V>> node = findNode(key);
         if (node == null) return null;
 
         if (node == head) {
@@ -130,7 +137,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         } else
             removeMiddleNode(node);
 
-        return node.getValue();
+        return node.getElement().getValue();
     }
 
     /**
@@ -169,9 +176,9 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
      *
      * @param node - middle node to be removed
      */
-    protected void removeMiddleNode(EntryClass<K, V> node) {
-        EntryClass<K, V> prevNode = node.getPrevious();
-        EntryClass<K, V> nextNode = node.getNext();
+    protected void removeMiddleNode(DoubleListNode<EntryClass<K, V>> node) {
+        DoubleListNode<EntryClass<K, V>> prevNode = node.getPrevious();
+        DoubleListNode<EntryClass<K, V>> nextNode = node.getNext();
         prevNode.setNext(nextNode);
         nextNode.setPrevious(prevNode);
         currentSize--;
@@ -185,21 +192,21 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
     @Override
     public Entry<K, V> minEntry() throws EmptyDictionaryException {
         if (isEmpty()) throw new EmptyDictionaryException();
-        return head;
+        return head.getElement();
     }
 
     @Override
     public Entry<K, V> maxEntry() throws EmptyDictionaryException {
         if (isEmpty()) throw new EmptyDictionaryException();
-        return tail;
+        return tail.getElement();
     }
 
     class EntryIterator implements Iterator<Entry<K, V>>, Serializable {
 
         static final long serialVersionUID = 0L;
 
-        EntryClass<K, V> next;
-        EntryClass<K, V> current;
+        DoubleListNode<EntryClass<K, V>> next;
+        DoubleListNode<EntryClass<K, V>> current;
 
         EntryIterator() {
             rewind();
@@ -216,7 +223,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         protected Entry<K, V> nextNode() {
             current = next;
             next = next.getNext();
-            return current;
+            return current.getElement();
         }
 
         public void rewind() {
