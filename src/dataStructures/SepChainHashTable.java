@@ -23,8 +23,6 @@ public class SepChainHashTable<K extends Comparable<K>, V>
      */
     protected Dictionary<K, V>[] table;
 
-    private final double LOAD_FACTOR = 0.5;
-
 
     /**
      * Constructor of an empty separate chaining hash table,
@@ -92,7 +90,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
 
         static final long serialVersionUID = 0L;
 
-        /**
+        /** 
          * Next element to be returned
          */
         Entry<K, V> next;
@@ -103,7 +101,7 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         Entry<K, V> current;
 
         /**
-         * Current index in the collision table
+         * Current index in the dispersion table
          */
         int counter;
 
@@ -173,21 +171,15 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         }
     }
 
-    @SuppressWarnings("unchecked")
     protected void rehash() {
-        int newSize = nextPrime((int) (table.length * 1.1));
-        Dictionary<K, V>[] newTable = (Dictionary<K, V>[]) new Dictionary[newSize];
-        for (int i = 0; i < newSize; i++)
-            newTable[i] = new OrderedDoubleDictionary<>();
+        SepChainHashTable<K, V> temp = new SepChainHashTable<>(table.length*2);
 
         Iterator<Entry<K, V>> it = iterator();
-        //iterate over all Entries and save them in the position of the new hash
+        //iterate over all Entries and save them in the new position
         while (it.hasNext()) {
             Entry<K, V> e = it.next();
-            int newHash = Math.abs(e.getKey().hashCode()) % newSize;
-            newTable[newHash].insert(e.getKey(), e.getValue());
+            temp.insert(e.getKey(), e.getValue());
         }
-        maxSize = (int) (newSize * LOAD_FACTOR);
-        table = newTable;
+        table = temp.table;
     }
 }
