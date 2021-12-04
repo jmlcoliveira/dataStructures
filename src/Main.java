@@ -4,14 +4,15 @@ import dataStructures.Iterator;
 public class Main {
 
     public static void main(String[] args) {
-       OrderedDoubleDictionary<Integer, Integer> od = new OrderedDoubleDictionary<>();
-       od.insert(1, 1);
-       od.insert(3, 3);
-       od.insert(2, 2);
+       OrderedDictionary<Integer, String> od = new OrderedDoubleDictionary<>();
+       od.insert(0, "zero");
+       od.insert(1, "one");
+       od.insert(2, "two");
 
-       Iterator<Entry<Integer, Integer>> it = od.iterator();
-       while(it.hasNext()){
-           System.out.println(it.next().getKey());
+       Iterator<Integer> itKeys = od.iteratorKeys();
+       Iterator<String> itValues = od.iteratorValues();
+        while(itKeys.hasNext()){
+           System.out.printf("%d : %s\n", itKeys.next(), itValues.next());
        }
     }
 

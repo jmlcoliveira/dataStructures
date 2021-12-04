@@ -90,37 +90,27 @@ public class SepChainHashTable<K extends Comparable<K>, V>
 
         static final long serialVersionUID = 0L;
 
-        /** 
-         * Next element to be returned
-         */
-        Entry<K, V> next;
-
-        /**
-         * Last returned element
-         */
-        Entry<K, V> current;
-
         /**
          * Current index in the dispersion table
          */
         int counter;
 
         /**
+         * Returned elements
+         */
+        int numberOfReturnedEntry;
+
+        /**
          * Iterator of collision table with elements
          */
         Iterator<Entry<K, V>> it;
-
-        /**
-         * Position of the iterator in the collision table
-         */
-        int posOfIterator;
 
         EntryIterator() {
             rewind();
         }
 
         public boolean hasNext() {
-            return next != null;
+            return it.hasNext();
         }
 
         public final Entry<K, V> next() {
@@ -128,58 +118,39 @@ public class SepChainHashTable<K extends Comparable<K>, V>
         }
 
         protected Entry<K, V> nextNode() {
-            current = next;
-            next = findNext();
-            return current;
+            Entry<K, V> e = it.next();
+            numberOfReturnedEntry++;
+            findNext();
+            return e;
         }
 
         public void rewind() {
             counter = 0;
-            posOfIterator = 0;
-            it = table[0].iterator();
-            next = findNext();
-            current = null;
+            numberOfReturnedEntry = 0;
+            findNext();
         }
 
         /**
          * Finds the next Entry to be returned
-         *
-         * @return an Entry if there is one or <code>null</code> if none was found
          */
-        protected Entry<K, V> findNext() {
-            Entry<K, V> next = null;
-            if (it != null && it.hasNext())
-                next = it.next(); //return next Entry of an iterator of collisions
-            else {
-                boolean foundNotEmpty = false;
-                //Search entire table until a not empty position is found
-                while (!foundNotEmpty && counter < table.length) {
-                    //posOfIterator is needed to know which was last position of iterator
-                    //which has already been iterated but that position is collision table is not empty
-                    if (table[counter].isEmpty() || posOfIterator == counter)
-                        counter++;
-                    else
-                        foundNotEmpty = true;
-                }
-                if (!foundNotEmpty)
-                    return null;
-                it = table[counter].iterator();
-                posOfIterator = counter;
-                return it.next();
+        protected void findNext() {
+            if (it==null || !it.hasNext() || numberOfReturnedEntry < currentSize) {
+                while (it==null || (counter<table.length && !it.hasNext()))
+                    it=table[counter++].iterator();
             }
-            return next;
         }
     }
 
     protected void rehash() {
         SepChainHashTable<K, V> temp = new SepChainHashTable<>(table.length*2);
 
-        Iterator<Entry<K, V>> it = iterator();
+        Iterator<Entry<K, V>> it = this.iterator();
         //iterate over all Entries and save them in the new position
         while (it.hasNext()) {
             Entry<K, V> e = it.next();
             temp.insert(e.getKey(), e.getValue());
         }
-        table = temp.table;
+        this.table = temp.table;
+        this.maxSize = temp.maxSize;
     }
 }
