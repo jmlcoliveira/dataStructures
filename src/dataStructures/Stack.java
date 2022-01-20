@@ -1,8 +1,6 @@
-/**
- * Package dataStructures for use in AED Curricular Unit
- */
 package dataStructures;
-import dataStructures.exceptions.*;
+
+import dataStructures.exceptions.EmptyStackException;
 
 import java.io.Serializable;
 

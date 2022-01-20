@@ -3,10 +3,18 @@ package dataStructures;
 import dataStructures.exceptions.EmptyListException;
 import dataStructures.exceptions.InvalidPositionException;
 
-import java.io.Serializable;
-
+/**
+ * Adaptation of the DoubleList class given by the AED Team
+ *
+ * @param <E> Generic Element
+ * @author Guilherme Pocas (60236) g.pocas@campus.fct.unl.pt
+ * @author Joao Oliveira (61052) jml.oliveira@campus.fct.unl.pt
+ */
 public class DoubleList<E> implements List<E> {
 
+    /**
+     * Serial Version UID of the Class
+     */
     static final long serialVersionUID = 0L;
 
     // Node at the head of the list.
@@ -16,38 +24,16 @@ public class DoubleList<E> implements List<E> {
     // Number of elements in the list.
     protected int currentSize;
 
-    /**
-     * Default constructor
-     */
     public DoubleList() {
         head = null;
         tail = null;
         currentSize = 0;
     }
 
-    /**
-     * Initialize with an already existing list
-     * @param list already existing list
-     */
     public DoubleList(DoubleList<E> list) {
         head = list.head;
         tail = list.tail;
         currentSize = list.currentSize;
-    }
-
-    /**
-     * Initialize by receiving a node - O(n) complexity
-     * @param node node
-     */
-    public DoubleList(DoubleListNode<E> node){
-        head = node;
-        tail = node;
-        currentSize = 0;
-
-        for(DoubleListNode<E> n = head; n != null; n=n.getNext()){
-            tail = n;
-            currentSize++;
-        }
     }
 
     @Override
@@ -226,7 +212,7 @@ public class DoubleList<E> implements List<E> {
 
 
     @Override
-    public int indexOf(E element) {
+    public int find(E element) {
         int i = 0;
         for (DoubleListNode<E> node = head; node != null; node = node.getNext()) {
             if (node.getElement().equals(element))
@@ -284,16 +270,19 @@ public class DoubleList<E> implements List<E> {
      * @param list - list to be appended to the end of this
      */
     public void append(DoubleList<E> list) {
-        DoubleListNode<E> first = list.head;
-        DoubleListNode<E> last = list.tail;
-        if (isEmpty())
-            head = first;
-        else {
-            first.setPrevious(tail);
-            tail.setNext(first);
+        if (!list.isEmpty()) {
+            DoubleListNode<E> first = list.head;
+            DoubleListNode<E> last = list.tail;
+            if (isEmpty())
+                head = first;
+            else {
+                first.setPrevious(tail);
+                tail.setNext(first);
+            }
+            tail = last;
+            currentSize += list.size();
+            list.clear();
         }
-        tail = last;
-        currentSize += list.size();
-        list.clear();
     }
+
 }

@@ -1,5 +1,6 @@
-package dataStructures;
+package dataStructures.orderedDictionaries;
 
+import dataStructures.*;
 import dataStructures.exceptions.EmptyDictionaryException;
 import dataStructures.exceptions.NoSuchElementException;
 
@@ -11,10 +12,20 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     private int currentSize;
 
+    private final Comparator<K> comparator;
+
     public OrderedDoubleDictionary() {
         head = null;
         tail = null;
         currentSize = 0;
+        comparator = null;
+    }
+
+    public OrderedDoubleDictionary(Comparator<K> comparator) {
+        head = null;
+        tail = null;
+        currentSize = 0;
+        this.comparator = comparator;
     }
 
     @Override
@@ -35,10 +46,11 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
 
     private DoubleListNode<Entry<K, V>> findNode(K key) {
         DoubleListNode<Entry<K, V>> node = head;
-        while (node != null && node.getElement().getKey().compareTo(key) <= 0) {
+        int compareResult = 0;
+        while (node != null && (compareResult = compare(node.getElement().getKey(), key)) <= 0) {
             K currentKey = node.getElement().getKey();
 
-            if (currentKey.equals(key))
+            if (compareResult == 0)
                 return node;
             node = node.getNext();
         }
@@ -53,12 +65,14 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         while (node != null) {
             K currentKey = node.getElement().getKey();
 
-            if (currentKey.equals(key)) {
+            int compareResult = compare(currentKey, key);
+
+            if (compareResult == 0) {
                 V oldValue = node.getElement().getValue();
                 ((EntryClass<K, V>) node.getElement()).setValue(value);
                 return oldValue;
             }
-            if (node.getElement().getKey().compareTo(key) > 0) {
+            if (compareResult > 0) {
                 next = node;
                 previous = node.getPrevious();
                 break;
@@ -66,7 +80,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
             node = node.getNext();
         }
 
-        DoubleListNode<Entry<K, V>> newNode = new DoubleListNode<Entry<K, V>>(new EntryClass<>(key, value));
+        DoubleListNode<Entry<K, V>> newNode = new DoubleListNode<>(new EntryClass<>(key, value));
         addNode(newNode, next, previous);
 
         return null;
@@ -134,9 +148,13 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         return tail.getElement();
     }
 
+    private int compare(K k1, K k2) {
+        return comparator != null ? comparator.compare(k1, k2) : k1.compareTo(k2);
+    }
+
     @Override
-    public Iterator<Entry<K, V>> iterator() {
-        return new IteratorEntry();
+    public Iterator<Entry<K, V>> iteratorEntries() {
+        return new IteratorEntries();
     }
 
     @Override
@@ -149,7 +167,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         return new IteratorKeys();
     }
 
-    abstract class ODLIterator{
+    abstract class ODLIterator {
         /**
          * Serial Version UID of the Class
          */
@@ -208,7 +226,7 @@ public class OrderedDoubleDictionary<K extends Comparable<K>, V> implements Orde
         }
     }
 
-    class IteratorEntry extends ODLIterator implements TwoWayIterator<Entry<K, V>> {
+    class IteratorEntries extends ODLIterator implements TwoWayIterator<Entry<K, V>> {
         @Override
         public Entry<K, V> next() throws NoSuchElementException {
             return super.next();

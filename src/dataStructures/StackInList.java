@@ -1,6 +1,6 @@
 package dataStructures;
-import dataStructures.exceptions.*;
 
+import dataStructures.exceptions.EmptyStackException;
 
 public class StackInList<E> implements Stack<E>
 {

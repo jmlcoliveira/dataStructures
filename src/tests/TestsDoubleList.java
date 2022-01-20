@@ -1,3 +1,5 @@
+package tests;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 import dataStructures.*;
@@ -77,9 +79,9 @@ public class TestsDoubleList {
         list.addLast(n0);
         list.addLast(n1);
         list.addLast(n2);
-        assertEquals(list.indexOf(n0), 0);
-        assertEquals(list.indexOf(n1), 1);
-        assertEquals(list.indexOf(n2), 2);
+        assertEquals(list.find(n0), 0);
+        assertEquals(list.find(n1), 1);
+        assertEquals(list.find(n2), 2);
     }
 
     @Test

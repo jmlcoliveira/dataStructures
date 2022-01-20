@@ -1,5 +1,7 @@
-package dataStructures;
+package dataStructures.orderedDictionaries;
 
+import dataStructures.Dictionary;
+import dataStructures.Entry;
 import dataStructures.exceptions.EmptyDictionaryException;
 
 /**
@@ -18,30 +20,25 @@ public interface OrderedDictionary<K extends Comparable<K>, V>
     /**
      * Returns the entry with the smallest key in the dictionary.
      *
-     * @return entry with the smallest key in the dictionary.
-     * @throws EmptyDictionaryException if dictionary is empty
+     * @return
+     * @throws EmptyDictionaryException
      */
     Entry<K,V> minEntry( ) throws EmptyDictionaryException;
 
     /**
      * Returns the entry with the largest key in the dictionary.
      *
-     * @return entry with the largest key in the dictionary.
-     * @throws EmptyDictionaryException if dictionary is empty
+     * @return
+     * @throws EmptyDictionaryException
      */
-    Entry<K,V> maxEntry( ) throws EmptyDictionaryException;
+    Entry<K, V> maxEntry() throws EmptyDictionaryException;
 
     /* (non-Javadoc)
-     * Returns an iterator of the entries in the dictionary 
+     * Returns an iterator of the entries in the dictionary
      * which preserves the key order relation.
-     * 
+     *
      * @see dataStructures.Dictionary#iterator()
      */
-    // Iterator<Entry<K,V>> iterator( );
-
-    Iterator<V> iteratorValues();
-
-    Iterator<K> iteratorKeys();
-
+    //Iterator<Entry<K, V>> iteratorEntries();
 } 
 
