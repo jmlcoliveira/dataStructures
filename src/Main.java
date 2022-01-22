@@ -18,5 +18,7 @@ public class Main {
             System.out.println(it.next().getKey());
 
         System.out.println(avl.isBalanced());
+
+        System.out.println(avl.depth());
     }
 }

@@ -49,6 +49,22 @@ public class BinarySearchTree<K extends Comparable<K>, V>
         this.comparator = comparator;
     }
 
+    public BinarySearchTree(BinarySearchTree<K, V> otherTree) {
+        if (otherTree.root != null) {
+            currentSize = otherTree.currentSize;
+            root = copyTree(otherTree.root);
+        }
+        comparator = null;
+    }
+
+    private BSTNode<K, V> copyTree(BSTNode<K, V> otherTreeNode) {
+        if (otherTreeNode == null) return null;
+        BSTNode<K, V> newNode = new AVLNode<>(otherTreeNode.getKey(), otherTreeNode.getValue());
+        newNode.setLeft(copyTree(otherTreeNode.getLeft()));
+        newNode.setRight(copyTree(otherTreeNode.getRight()));
+        return newNode;
+    }
+
     @Override
     public boolean isEmpty() {
         return root == null;
@@ -103,19 +119,28 @@ public class BinarySearchTree<K extends Comparable<K>, V>
         return booleanNode;
     }
 
-    public boolean isBalanced(){
-        if(root == null) return true;
+    public boolean isBalanced() {
+        if (root == null) return true;
         return height(root) != -1;
     }
 
-    private int height(BSTNode<K, V> node){
-        if(node == null) return 0;
+    private int height(BSTNode<K, V> node) {
+        if (node == null) return 0;
         int leftSize = height(node.getLeft());
-        if(leftSize == -1) return -1;
+        if (leftSize == -1) return -1;
         int rightSize = height(node.getRight());
-        if(rightSize == -1) return -1;
-        if(Math.abs(leftSize - rightSize) > 1) return -1;
+        if (rightSize == -1) return -1;
+        if (Math.abs(leftSize - rightSize) > 1) return -1;
         return Math.max(leftSize, rightSize) + 1;
+    }
+
+    public int depth(){
+        return depth(root);
+    }
+
+    private int depth(BSTNode<K, V> node){
+        if(node == null) return 0;
+        return 1 + Math.max(depth(node.getLeft()), depth(node.getRight()));
     }
 
     public boolean sameShapeTree(BinarySearchTree<K, V> otherTree) {
@@ -208,27 +233,26 @@ public class BinarySearchTree<K extends Comparable<K>, V>
         return null;
     }
 
-    protected boolean insertNode(BSTNode<K, V> newNode){
+    protected boolean insertNode(BSTNode<K, V> newNode) {
         return insertNodeRec(this.root, newNode);
     }
 
-    private boolean insertNodeRec(BSTNode<K,V> node, BSTNode<K,V> newNode) {
-        if(this.root == null){
+    private boolean insertNodeRec(BSTNode<K, V> node, BSTNode<K, V> newNode) {
+        if (this.root == null) {
             this.root = newNode;
             currentSize++;
             return true;
         }
-        if(node.getKey().compareTo(newNode.getKey()) == 0) return false;
-        if(node.getKey().compareTo(newNode.getKey()) < 0){
-            if(node.getRight() == null){
+        if (node.getKey().compareTo(newNode.getKey()) == 0) return false;
+        if (node.getKey().compareTo(newNode.getKey()) < 0) {
+            if (node.getRight() == null) {
                 node.setRight(newNode);
                 currentSize++;
                 return true;
             }
             return insertNodeRec(node.getRight(), newNode);
-        }
-        else{
-            if(node.getLeft() == null){
+        } else {
+            if (node.getLeft() == null) {
                 node.setLeft(newNode);
                 currentSize++;
                 return true;
